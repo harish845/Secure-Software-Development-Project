@@ -32,9 +32,10 @@ router.route("/createClinic").post((req, res) => {
 
 const limitergetClinic = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 300,
   message: "Too many requests from this IP, please try again after 15 minutes.",
 });
+
 // read ~ http://localhost:4000/api/Clinics/admin
 router.route("/admin").get(limitergetClinic, (req, res) => {
   Clinics.find()
@@ -67,7 +68,7 @@ const updateClinicLimiter = rateLimit({
 
 // Apply rate limiter to the clinic update route
 router.route("/updateClinic/:id").put(
-  updateClinicLimiter, // Add rate limiting middleware here
+  updateClinicLimiter,
   [
     // Input validation and sanitization
     body("clinicName")
