@@ -13,10 +13,30 @@ export default function AdminDashBoard() {
   const [searchEmail, setSearchEmail] = useState(""); // State for search email input
   const navigate = useNavigate();
   const role = "admin";
+  const apiEndpoint = process.env.REACT_APP_API_GET_ALL_USERS_URL;
+
+  // Function to validate URL
+  const isValidURL = (endpoint) => {
+    try {
+      const parsedUrl = new URL(endpoint);
+      const validProtocols = ["http:", "https:"];
+      const isPublicIP = !parsedUrl.hostname.match(
+        /^(localhost|127\.0\.0\.1|\[::1\])$/
+      ); // Block local addresses
+
+      // Verify protocol
+      if (!validProtocols.includes(parsedUrl.protocol)) {
+        return false;
+      }
+
+      return isPublicIP; // Ensure it's not a local address
+    } catch (err) {
+      return false;
+    }
+  };
 
   // Function to handle download report
   const handleDownload = () => {
-    // Assuming you have a state variable called `filteredUsers` that contains the filtered users
     const itemsToExport = filteredUsers || allUsers;
     const now = new Date();
     const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
@@ -71,12 +91,14 @@ export default function AdminDashBoard() {
                 }}
                 onClick={async () => {
                   try {
-                    await axios.delete(
-                      `http://localhost:4000/api/admin/delete/${id}`
-                    );
-                    toast.success("User deleted successfully");
-                    //window reload
-                    window.location.reload();
+                    const deleteUrl = `http://localhost:4000/api/admin/delete/${id}`;
+                    if (isValidURL(deleteUrl)) {
+                      await axios.delete(deleteUrl);
+                      toast.success("User deleted successfully");
+                      window.location.reload();
+                    } else {
+                      toast.error("Invalid URL for deletion.");
+                    }
                   } catch (error) {
                     toast.error(error.message);
                   }
@@ -115,22 +137,24 @@ export default function AdminDashBoard() {
   };
 
   useEffect(() => {
-    const getAllUsers = () => {
-      axios
-        .get(`${process.env.REACT_APP_API_GET_ALL_USERS_URL}?role=${role}`)
-        .then((res) => {
+    const getAllUsers = async () => {
+      if (isValidURL(apiEndpoint)) {
+        try {
+          const res = await axios.get(`${apiEndpoint}?role=${role}`);
           const filteredUsers = res.data.filter(
             (user) => !user.email.startsWith("admin")
           );
           setAllUsers(filteredUsers);
-        })
-        .catch((err) => {
+        } catch (err) {
           toast.error(err.message);
-        });
+        }
+      } else {
+        toast.error("Invalid API endpoint.");
+      }
     };
 
     getAllUsers();
-  }, []);
+  }, [apiEndpoint, role]);
 
   // Function to filter users based on email
   const filteredUsers = allUsers.filter((user) =>
@@ -293,9 +317,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "170px", // Add MUI style
-                    textAlign: "left", // Align text left
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
                   }}
                 >
                   First Name
@@ -304,9 +328,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "100px", // Add MUI style
-                    textAlign: "left", // Align text left
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "100px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
                   }}
                 >
                   Last Name
@@ -315,9 +339,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "170px", // Add MUI style
-                    textAlign: "left", // Align text left
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
                   }}
                 >
                   Email
@@ -326,9 +350,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "170px", // Add MUI style
-                    textAlign: "right", // Align text right
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "170px",
+                    textAlign: "right",
+                    backgroundColor: "#f5f5f5",
                   }}
                 >
                   Contact
@@ -337,9 +361,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "170px", // Add MUI style
-                    textAlign: "left", // Align text left
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
                   }}
                 >
                   Address
@@ -348,9 +372,9 @@ export default function AdminDashBoard() {
                   style={{
                     padding: "20px",
                     fontSize: "20px",
-                    minWidth: "170px", // Add MUI style
-                    textAlign: "left", // Align text left
-                    backgroundColor: "#f5f5f5", // Background color
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
                   }}
                 ></th>
               </tr>
@@ -362,7 +386,7 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "170px", // Add MUI style
+                      minWidth: "170px",
                     }}
                   >
                     {user.firstname}
@@ -371,7 +395,7 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "100px", // Add MUI style
+                      minWidth: "100px",
                     }}
                   >
                     {user.lastname}
@@ -380,7 +404,7 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "170px", // Add MUI style
+                      minWidth: "170px",
                     }}
                   >
                     {user.email}
@@ -389,8 +413,8 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "170px", // Add MUI style
-                      textAlign: "right", // Align text right
+                      minWidth: "170px",
+                      textAlign: "right",
                     }}
                   >
                     {user.contact}
@@ -399,8 +423,8 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "170px", // Add MUI style
-                      textAlign: "left", // Align text left
+                      minWidth: "170px",
+                      textAlign: "left",
                     }}
                   >
                     {user.addLine1}, {user.addLine2}, {user.addLine3}
@@ -409,7 +433,7 @@ export default function AdminDashBoard() {
                     style={{
                       padding: "10px",
                       fontSize: "18px",
-                      minWidth: "170px", // Add MUI style
+                      minWidth: "170px",
                     }}
                   >
                     <button
