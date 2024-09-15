@@ -1,9 +1,16 @@
 const router = require("express").Router();
 let Test = require("../../models/GeneralTest_Modal");
 const { route } = require("../User/User");
-
-//import middle ware function - require auth for all routes
+const rateLimit = require("express-rate-limit");
 const requireAuth = require("../../middleware/requireAuth");
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again after an hour.",
+});
+
+router.use(limiter);
 router.use(requireAuth);
 
 // Update or add test
