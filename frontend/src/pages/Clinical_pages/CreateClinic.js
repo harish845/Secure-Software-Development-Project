@@ -37,7 +37,7 @@ function CreateClinic() {
       };
 
       axios
-        .post("http://localhost:4000/Clinics/createClinic", newClinicData)
+        .post(process.env.REACT_APP_API_CREATE_CLINIC_URL, newClinicData)
         .then(() => {
           toast.success("New Clinic Created!");
           setTimeout(() => {
@@ -45,7 +45,7 @@ function CreateClinic() {
           }, 3000);
         })
         .catch((err) => {
-          toast.error("An Error Occured : ", err);
+          toast.error("An Error Occurred: ", err);
         });
     }
   };

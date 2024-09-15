@@ -15,7 +15,9 @@ export default function HomePage() {
   useEffect(() => {
     async function getClinics() {
       try {
-        const response = await axios.get("http://localhost:4000/Clinics/admin");
+        const response = await axios.get(
+          process.env.REACT_APP_API_GET_CLINICS_ADMIN_URL
+        );
         setClinics(response.data);
       } catch (error) {
         toast.error(error.message);
