@@ -32,12 +32,11 @@ router.route("/createClinic").post((req, res) => {
 
 const limitergetClinic = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 200,
   message: "Too many requests from this IP, please try again after 15 minutes.",
 });
 // read ~ http://localhost:4000/api/Clinics/admin
 router.route("/admin").get(limitergetClinic, (req, res) => {
-  // Fetch all Clinics with proper error handling
   Clinics.find()
     .then((clinicData) => {
       res.status(200).json(clinicData); // Respond with 200 status and clinic data
@@ -119,7 +118,7 @@ router.route("/updateClinic/:id").put(
           clinicContact,
           clinicWebsite,
         },
-        { new: true } // To return the updated document
+        { new: true }
       );
 
       if (!updatedClinic) {
@@ -163,15 +162,12 @@ router.route("/delete/:id").delete(updateClinicLimiter, async (req, res) => {
     });
 });
 
-// Set up rate limiter: maximum of 100 requests per 15 minutes
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP, please try again after 15 minutes.",
 });
 
-// Apply the rate limiter to all routes in this router
 router.use(limiter);
 
 router.route("/getAll").get(async (req, res) => {
