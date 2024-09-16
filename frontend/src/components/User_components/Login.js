@@ -8,6 +8,8 @@ import validator from "validator";
 import { Button } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 import bg from "../../assets/User_assets/img/bg.jpg";
+import googleButton from '../../assets/User_assets/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png';
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +18,21 @@ const Login = () => {
   const { login, isLoading } = useLogIn();
   const navigate = useNavigate();
 
+  function nav(url) {
+    window.location.href=url;
+  }
+
+  async function auth() {
+    try {
+      const response = await fetch('http://127.0.0.1:4000/auth-req/request', { method: 'POST' });
+      const data = await response.json();
+      console.log(data); // Add this line to see the response
+      nav(data.url); // Navigate to the Google OAuth URL
+    } catch (error) {
+      console.error('Error:', error); // Log any errors
+    }
+  }
+  
   const isUserAdmin = email.startsWith("admin_");
 
   const handleLoginFormSubmit = async (e) => {
@@ -178,6 +195,9 @@ const Login = () => {
                     </Button>
                   </Link>
                 </div>
+                <button type="button" onClick={()=>{auth()}}>
+                    <img src={googleButton} alt="google sign in"/>
+                  </button>
               </form>
             </div>
           </div>

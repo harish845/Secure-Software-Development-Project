@@ -17,23 +17,18 @@ const userSchema = new Schema({
   },
   contact: {
     type: String,
-    required: true,
   },
   addLine1: {
     type: String,
-    required: true,
   },
   addLine2: {
     type: String,
-    required: true,
   },
   addLine3: {
     type: String,
-    required: true,
   },
   gender: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
