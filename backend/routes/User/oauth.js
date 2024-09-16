@@ -23,12 +23,8 @@ async function getUserData(access_token) {
         oAuth2Client.setCredentials(tokens);
         console.log('Token acquired:', tokens);
         const userData = await getUserData(tokens.access_token);
-        
-        res.json({ 
-          success: true, 
-          userData,
-          redirectUrl: 'http://localhost:3000/profile-home' // URL to redirect on frontend
-      });
+        console.log('User : ',userData);
+        res.json(userData);
     } catch(err) {
       console.error("Error with signing in with Google:", err);
       res.status(500).send("Error with Google authentication");

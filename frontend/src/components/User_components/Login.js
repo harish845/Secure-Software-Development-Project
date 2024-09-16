@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { ToastContainer as ReactToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLogIn } from "../../hooks/User_hooks/useLogIn";
@@ -10,34 +10,27 @@ import "react-toastify/dist/ReactToastify.css";
 import bg from "../../assets/User_assets/img/bg.jpg";
 import googleButton from '../../assets/User_assets/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png';
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Declare errorMessage state
+  const [errorMessage, setErrorMessage] = useState("");
   const { login, isLoading } = useLogIn();
   const navigate = useNavigate();
 
-  function nav(url) {
-    window.location.href=url;
-  }
-
-  async function auth() {
+  // Initiate Google OAuth flow
+  async function handleGoogleAuth() {
     try {
       const response = await fetch('http://127.0.0.1:4000/auth-req/request', { method: 'POST' });
       const data = await response.json();
-      console.log(data); // Add this line to see the response
-      nav(data.url); // Navigate to the Google OAuth URL
+      window.location.href = data.url; // Redirect to Google OAuth
     } catch (error) {
-      console.error('Error:', error); // Log any errors
+      console.error('Error:', error);
     }
   }
-  
-  const isUserAdmin = email.startsWith("admin_");
 
   const handleLoginFormSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous error message
+    setErrorMessage("");
 
     if (!validator.isEmail(email)) {
       toast.error("Email is not valid");
@@ -195,7 +188,7 @@ const Login = () => {
                     </Button>
                   </Link>
                 </div>
-                <button type="button" onClick={()=>{auth()}}>
+                <button type="button" onClick={()=>{handleGoogleAuth()}}>
                     <img src={googleButton} alt="google sign in"/>
                   </button>
               </form>
