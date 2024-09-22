@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer as ReactToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLogIn } from "../../hooks/User_hooks/useLogIn";
@@ -8,7 +8,7 @@ import validator from "validator";
 import { Button } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 import bg from "../../assets/User_assets/img/bg.jpg";
-import googleButton from '../../assets/User_assets/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png';
+import googleButton from "../../assets/User_assets/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,11 +20,13 @@ const Login = () => {
   // Initiate Google OAuth flow
   async function handleGoogleAuth() {
     try {
-      const response = await fetch('http://127.0.0.1:4000/auth-req/request', { method: 'POST' });
+      const response = await fetch("http://127.0.0.1:4000/auth-req/request", {
+        method: "POST",
+      });
       const data = await response.json();
       window.location.href = data.url; // Redirect to Google OAuth
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   }
 
@@ -49,9 +51,9 @@ const Login = () => {
         // Redirect to the appropriate dashboard after a successful login
         if (email.startsWith("admin")) {
           navigate("/admin-dashboard");
-      } else {
+        } else {
           navigate("/home");
-      }
+        }
       }, 1000);
     } catch (Error) {
       toast.error("Incorrect Password");
@@ -188,9 +190,37 @@ const Login = () => {
                     </Button>
                   </Link>
                 </div>
-                <button type="button" onClick={()=>{handleGoogleAuth()}}>
-                    <img src={googleButton} alt="google sign in"/>
+                <div
+                  style={{
+                    padding: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "10vh",
+                  }}
+                >
+                  <button
+                    style={{
+                      border: "none",
+                      cursor: "pointer",
+
+                      padding: "8px",
+                    }}
+                    onClick={()=>{handleGoogleAuth()}}
+                  >
+                    <img
+                      style={{
+                        border: "none",
+                        cursor: "pointer",
+                        height: "40px",
+                        width: "40px",
+                      }}
+                      src="https://www.svgrepo.com/show/475656/google-color.svg"
+                      alt="google logo"
+                    />
+                    <span className="text-sm">Login with Google</span>
                   </button>
+                </div>
               </form>
             </div>
           </div>
