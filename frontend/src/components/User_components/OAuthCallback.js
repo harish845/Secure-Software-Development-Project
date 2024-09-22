@@ -27,6 +27,9 @@ const OAuthCallback = () => {
             }
         };
 
+        const ROLE = "user";
+        localStorage.setItem("role", ROLE);
+
         localStorage.setItem('user', JSON.stringify(userData));
         console.log("User Stored:", userData);
 

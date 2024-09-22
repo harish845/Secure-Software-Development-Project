@@ -50,8 +50,12 @@ const Login = () => {
       setTimeout(() => {
         // Redirect to the appropriate dashboard after a successful login
         if (email.startsWith("admin")) {
+          const ROLE = "admin";
+          localStorage.setItem("role", ROLE);
           navigate("/admin-dashboard");
         } else {
+          const ROLE = "user";
+          localStorage.setItem("role", ROLE);
           navigate("/home");
         }
       }, 1000);
@@ -190,38 +194,40 @@ const Login = () => {
                     </Button>
                   </Link>
                 </div>
-                <div
+              </form>
+              <div
+                style={{
+                  padding: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "10vh",
+                }}
+              >
+                <button
                   style={{
-                    padding: "20px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "10vh",
+                    border: "none",
+                    cursor: "pointer",
+
+                    padding: "8px",
+                  }}
+                  onClick={() => {
+                    handleGoogleAuth();
                   }}
                 >
-                  <button
+                  <img
                     style={{
                       border: "none",
                       cursor: "pointer",
-
-                      padding: "8px",
+                      height: "40px",
+                      width: "40px",
                     }}
-                    onClick={()=>{handleGoogleAuth()}}
-                  >
-                    <img
-                      style={{
-                        border: "none",
-                        cursor: "pointer",
-                        height: "40px",
-                        width: "40px",
-                      }}
-                      src="https://www.svgrepo.com/show/475656/google-color.svg"
-                      alt="google logo"
-                    />
-                    <span className="text-sm">Login with Google</span>
-                  </button>
-                </div>
-              </form>
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="google logo"
+                  />
+                  <span className="text-sm">Login with Google</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
