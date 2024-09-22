@@ -39,7 +39,7 @@ export default function UserProfile() {
         Authorization: `Bearer ${token}`,
       };
       axios
-        .get(`http://localhost:4000/api/users/read-all`, { headers })
+        .get(process.env.REACT_APP_API_READ_ALL_USERS_URL, { headers })
         .then((res) => {
           setTestData(res.data);
           console.log(res.data);
@@ -575,9 +575,7 @@ export default function UserProfile() {
                 </div>
               </div>
             </div>
-            <div
-              style={{ flex: "1", paddingTop: "10px", paddingLeft: "10px" }}
-            >
+            <div style={{ flex: "1", paddingTop: "10px", paddingLeft: "10px" }}>
               <div
                 style={{
                   width: "580px",

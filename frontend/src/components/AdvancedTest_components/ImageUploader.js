@@ -8,7 +8,7 @@ import {
   Modal,
   notification,
 } from "antd";
-import { UploadOutlined, CameraOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Webcam from "react-webcam";
 import "./ImageUploader.css";
@@ -31,7 +31,7 @@ function ImageUploader() {
     }
   };
 
-  const TIMEOUT_DURATION = 8000; // 8 seconds timeout
+  const TIMEOUT_DURATION = 8000;
 
   const handleUpload = async () => {
     try {
@@ -46,7 +46,7 @@ function ImageUploader() {
       formData.append("image", selectedFile);
 
       const response = await axios.post(
-        "http://localhost:4000/api/advancedTest/upload",
+        process.env.REACT_APP_API_UPLOAD_URL,
         formData,
         {
           headers: {
@@ -131,7 +131,7 @@ function ImageUploader() {
       formData.append("image", selectedFile);
 
       const response = await axios.post(
-        "http://localhost:4000/api/advancedTest/ImageQuality",
+        process.env.REACT_APP_API_VERIFY_URL,
         formData,
         {
           headers: {
