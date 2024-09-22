@@ -44,7 +44,7 @@ app.use(express.json()); //to add json to the 'req' Object
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  req.url = req.url.replace(/[^\w.\/-]/g, "");
+  console.log("Request path: %s, Request method: %s", req.path, req.method);
   next();
 });
 app.use(bodyParser.json());
