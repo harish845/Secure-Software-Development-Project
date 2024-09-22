@@ -164,7 +164,7 @@ export default function UserProfile() {
   };
 
   const handleLogOut = () => {
-    logout();
+    logout(); // needs to work on this
     navigate("/");
   };
 

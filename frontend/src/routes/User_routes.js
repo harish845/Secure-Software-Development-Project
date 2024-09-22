@@ -6,6 +6,7 @@ import Register from "../components/User_components/Register";
 import UserProfile from "../components/User_components/UserProfile";
 import UpdateUser from "../components/User_components/UpdateUser";
 import AdminDashBoard from "../components/User_components/AdminDashBoard";
+import OAuthCallback from "../components/User_components/OAuthCallback";
 
 export default function User_routes() {
   return (
@@ -17,6 +18,7 @@ export default function User_routes() {
       <Route path="/home" element={<UserProfile/>} />
       <Route path="/update" element={<UpdateUser/>} />
      
+      <Route path="/oauth-callback" element={<OAuthCallback/>} />
       <Route path="/admin-dashboard" element={<AdminDashBoard/>} />
       </Route>
     </Routes>
