@@ -16,7 +16,6 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function UserProfile() {
   const navigate = useNavigate();
-
   const { logout } = useLogOut();
   const { user } = useContext(AuthContext);
   const [testData, setTestData] = useState([]);
@@ -53,7 +52,7 @@ export default function UserProfile() {
     };
 
     getTestData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     // Check if there's cached data in local storage
