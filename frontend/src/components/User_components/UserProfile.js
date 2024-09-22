@@ -38,7 +38,7 @@ export default function UserProfile() {
         Authorization: `Bearer ${token}`,
       };
       axios
-        .get(`http://localhost:4000/api/users/read-all`, { headers })
+        .get(process.env.REACT_APP_API_READ_ALL_USERS_URL, { headers })
         .then((res) => {
           setTestData(res.data);
           console.log(res.data);

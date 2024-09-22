@@ -6,6 +6,7 @@ import "../../assets/Clinical_assets/search-line.png";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import LogoImage from "../../assets/Clinical_assets/logo.jpg";
+import DOMPurify from "dompurify";
 
 function ClinicHome() {
   const [clinics, setClinics] = useState([]);
@@ -15,7 +16,7 @@ function ClinicHome() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/Clinics/getAll`
+          process.env.REACT_APP_API_GET_CLINICS_URL
         );
         if (response.data) {
           setClinics(response.data);
@@ -69,23 +70,24 @@ function ClinicHome() {
       <div className="Main">
         <div className="clinic-grid">
           {filteredClinics.map((clinic, index) => (
-            <Card
+             <Card
               key={index}
               clinicId={clinic.id}
-              clinicName={clinic.clinicName}
-              clinicLocation={clinic.clinicLocation}
-              clinicContact={clinic.clinicContact}
+              clinicName={DOMPurify.sanitize(clinic.clinicName)} // Escape user input
+              clinicLocation={DOMPurify.sanitize(clinic.clinicLocation)} // Escape user input
+              clinicContact={DOMPurify.sanitize(clinic.clinicContact)} // Escape user input
               clinicWebsite={
                 <a
-                  href={clinic.clinicWebsite}
+                  href={DOMPurify.sanitize(clinic.clinicWebsite)} // Escape URL input
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    handleClinicWebsiteClick(clinic.clinicWebsite);
+                    e.preventDefault();
+                    handleClinicWebsiteClick(clinic.clinicWebsite); // Ensure URL is safe
                   }}
                 >
-                  {clinic.clinicWebsite}
+                  {DOMPurify.sanitize(clinic.clinicWebsite)}
+                  {/* Escape displayed URL */}
                 </a>
               }
             />

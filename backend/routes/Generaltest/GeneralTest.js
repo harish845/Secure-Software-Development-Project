@@ -1,15 +1,29 @@
 const router = require("express").Router();
 let Test = require("../../models/GeneralTest_Modal");
 const { route } = require("../User/User");
+const rateLimit = require("express-rate-limit");
 
-//import middle ware function - require auth for all routes
+// Import middleware function - require auth for all routes
 const requireAuth = require("../../middleware/requireAuth");
+
+// Utility function to sanitize user input
+const sanitizeInput = (input) => {
+  return typeof input === "string" ? input.replace(/[^a-zA-Z0-9_]/g, "") : "";
+};
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 300,
+  message: "Too many requests from this IP, please try again after an hour.",
+});
+
+router.use(limiter);
 router.use(requireAuth);
 
 // Update or add test
 router.route("/addTest").post((req, res) => {
   const test_name = "General Test";
-  const user_id = req.user.firstname;
+  const user_id = sanitizeInput(req.user.firstname);
   const test_date = new Date();
   const test_score = req.body.test_score;
 
@@ -53,11 +67,9 @@ router.route("/addTest").post((req, res) => {
 });
 
 router.route("/delete-all").delete((req, res) => {
-  const userId = req.user.firstname;
+  const user_id = sanitizeInput(req.user.firstname);
 
-  const userToDeleteId = req.user.firstname;
-
-  Test.deleteMany({ user_id: userToDeleteId })
+  Test.deleteMany({ user_id: user_id })
     .then(() => {
       res.json(
         "All General Test data for the specified user_id deleted successfully."
