@@ -1,15 +1,24 @@
 const router = require("express").Router();
 let Test = require("../../models/GeneralTest_Modal");
 const { route } = require("../User/User");
+const rateLimit = require("express-rate-limit");
 
 // Import middleware function - require auth for all routes
 const requireAuth = require("../../middleware/requireAuth");
-router.use(requireAuth);
 
 // Utility function to sanitize user input
 const sanitizeInput = (input) => {
   return typeof input === "string" ? input.replace(/[^a-zA-Z0-9_]/g, "") : "";
 };
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 300,
+  message: "Too many requests from this IP, please try again after an hour.",
+});
+
+router.use(limiter);
+router.use(requireAuth);
 
 // Update or add test
 router.route("/addTest").post((req, res) => {
