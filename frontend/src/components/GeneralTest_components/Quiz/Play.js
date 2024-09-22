@@ -392,7 +392,7 @@ class play extends React.Component {
       console.log("Headers:", headers);
 
       axios
-        .post("http://localhost:4000/GeneralTest/addTest", data, { headers })
+        .post(process.env.REACT_APP_API_ADD_TEST_URL, data, { headers })
         .then((response) => {
           message.success("Test Data saved successfully");
           console.log("Data saved successfully:", response.data);
