@@ -13,10 +13,30 @@ export default function AdminDashBoard() {
   const [searchEmail, setSearchEmail] = useState(""); // State for search email input
   const navigate = useNavigate();
   const role = "admin";
+  const apiEndpoint = process.env.REACT_APP_API_GET_ALL_USERS_URL;
+
+  // Function to validate URL
+  const isValidURL = (endpoint) => {
+    try {
+      const parsedUrl = new URL(endpoint);
+      const validProtocols = ["http:", "https:"];
+      const isPublicIP = !parsedUrl.hostname.match(
+        /^(localhost|127\.0\.0\.1|\[::1\])$/
+      ); // Block local addresses
+
+      // Verify protocol
+      if (!validProtocols.includes(parsedUrl.protocol)) {
+        return false;
+      }
+
+      return isPublicIP; // Ensure it's not a local address
+    } catch (err) {
+      return false;
+    }
+  };
 
   // Function to handle download report
   const handleDownload = () => {
-    // Assuming you have a state variable called `filteredUsers` that contains the filtered users
     const itemsToExport = filteredUsers || allUsers;
     const now = new Date();
     const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
@@ -71,12 +91,14 @@ export default function AdminDashBoard() {
                 }}
                 onClick={async () => {
                   try {
-                    await axios.delete(
-                      `http://localhost:4000/api/admin/delete/${id}`
-                    );
-                    toast.success("User deleted successfully");
-                    //window reload
-                    window.location.reload();
+                    const deleteUrl = `http://localhost:4000/api/admin/delete/${id}`;
+                    if (isValidURL(deleteUrl)) {
+                      await axios.delete(deleteUrl);
+                      toast.success("User deleted successfully");
+                      window.location.reload();
+                    } else {
+                      toast.error("Invalid URL for deletion.");
+                    }
                   } catch (error) {
                     toast.error(error.message);
                   }
@@ -115,22 +137,24 @@ export default function AdminDashBoard() {
   };
 
   useEffect(() => {
-    const getAllUsers = () => {
-      axios
-        .get(`http://localhost:4000/api/admin/get-all?role=${role}`)
-        .then((res) => {
+    const getAllUsers = async () => {
+      if (isValidURL(apiEndpoint)) {
+        try {
+          const res = await axios.get(`${apiEndpoint}?role=${role}`);
           const filteredUsers = res.data.filter(
             (user) => !user.email.startsWith("admin")
           );
           setAllUsers(filteredUsers);
-        })
-        .catch((err) => {
+        } catch (err) {
           toast.error(err.message);
-        });
+        }
+      } else {
+        toast.error("Invalid API endpoint.");
+      }
     };
 
     getAllUsers();
-  }, []);
+  }, [apiEndpoint, role]);
 
   // Function to filter users based on email
   const filteredUsers = allUsers.filter((user) =>
@@ -258,173 +282,182 @@ export default function AdminDashBoard() {
             </div>
           </div>
         </div>
-        <div style={{ flex: "1", paddingTop: "20px", paddingLeft:"300px" }}>
-        <button
-              onClick={handleDownload}
-              style={{
-                backgroundColor: "#1F6E8C",
-                color: "white",
-                padding: "10px 20px",
-                borderRadius: "5px",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "18px",
-                marginLeft: "15px",
-              }}
-            >
-              Download Report
-            </button>
-        </div>
-      </div>
-      <div >
-        <div style={{paddingTop:"40px", paddingBottom:"40px", display: "flex", justifyContent: "center", alignItems: "center"}}>
-        <table>
-  <thead>
-    <tr>
-      <th
-        style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "170px", // Add MUI style
-          textAlign: "left", // Align text left
-          backgroundColor: "#f5f5f5", // Background color
-        }}
-      >
-        First Name
-      </th>
-      <th
-        style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "100px", // Add MUI style
-          textAlign: "left", // Align text left
-          backgroundColor: "#f5f5f5", // Background color
-        }}
-      >
-        Last Name
-      </th>
-      <th
-        style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "170px", // Add MUI style
-          textAlign: "left", // Align text left
-          backgroundColor: "#f5f5f5", // Background color
-        }}
-      >
-        Email
-      </th>
-      <th
-        style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "170px", // Add MUI style
-          textAlign: "right", // Align text right
-          backgroundColor: "#f5f5f5", // Background color
-        }}
-      >
-        Contact
-      </th>
-      <th
-        style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "170px", // Add MUI style
-          textAlign: "left", // Align text left
-          backgroundColor: "#f5f5f5", // Background color
-        }}
-      >
-        Address
-      </th>
-      <th style={{
-          padding: "20px",
-          fontSize: "20px",
-          minWidth: "170px", // Add MUI style
-          textAlign: "left", // Align text left
-          backgroundColor: "#f5f5f5", // Background color
-        }}></th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredUsers.map((user, index) => (
-      <tr key={index}>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "170px", // Add MUI style
-          }}
-        >
-          {user.firstname}
-        </td>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "100px", // Add MUI style
-          }}
-        >
-          {user.lastname}
-        </td>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "170px", // Add MUI style
-          }}
-        >
-          {user.email}
-        </td>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "170px", // Add MUI style
-            textAlign: "right", // Align text right
-          }}
-        >
-          {user.contact}
-        </td>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "170px", // Add MUI style
-            textAlign: "left", // Align text left
-          }}
-        >
-          {user.addLine1}, {user.addLine2}, {user.addLine3}
-        </td>
-        <td
-          style={{
-            padding: "10px",
-            fontSize: "18px",
-            minWidth: "170px", // Add MUI style
-          }}
-        >
+        <div style={{ flex: "1", paddingTop: "20px", paddingLeft: "300px" }}>
           <button
+            onClick={handleDownload}
             style={{
-              backgroundColor: "#dc3545",
-              color: "#fff",
-              padding: "5px 12px",
+              backgroundColor: "#1F6E8C",
+              color: "white",
+              padding: "10px 20px",
               borderRadius: "5px",
               border: "none",
-              marginRight: "10px",
               cursor: "pointer",
               fontSize: "18px",
-            }}
-            onClick={() => {
-              deleteUser(user._id);
+              marginLeft: "15px",
             }}
           >
-            Delete User
+            Download Report
           </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+        </div>
+      </div>
+      <div>
+        <div
+          style={{
+            paddingTop: "40px",
+            paddingBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  First Name
+                </th>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "100px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Last Name
+                </th>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Email
+                </th>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "170px",
+                    textAlign: "right",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Contact
+                </th>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Address
+                </th>
+                <th
+                  style={{
+                    padding: "20px",
+                    fontSize: "20px",
+                    minWidth: "170px",
+                    textAlign: "left",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                ></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredUsers.map((user, index) => (
+                <tr key={index}>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "170px",
+                    }}
+                  >
+                    {user.firstname}
+                  </td>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "100px",
+                    }}
+                  >
+                    {user.lastname}
+                  </td>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "170px",
+                    }}
+                  >
+                    {user.email}
+                  </td>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "170px",
+                      textAlign: "right",
+                    }}
+                  >
+                    {user.contact}
+                  </td>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "170px",
+                      textAlign: "left",
+                    }}
+                  >
+                    {user.addLine1}, {user.addLine2}, {user.addLine3}
+                  </td>
+                  <td
+                    style={{
+                      padding: "10px",
+                      fontSize: "18px",
+                      minWidth: "170px",
+                    }}
+                  >
+                    <button
+                      style={{
+                        backgroundColor: "#dc3545",
+                        color: "#fff",
+                        padding: "5px 12px",
+                        borderRadius: "5px",
+                        border: "none",
+                        marginRight: "10px",
+                        cursor: "pointer",
+                        fontSize: "18px",
+                      }}
+                      onClick={() => {
+                        deleteUser(user._id);
+                      }}
+                    >
+                      Delete User
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
       <ReactToastContainer />
