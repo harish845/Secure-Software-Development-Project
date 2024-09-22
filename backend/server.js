@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
-const csurf = require("csurf"); // CSRF protection middleware
-const cookieSession = require("cookie-session");
 
 const UserBase = require("./routes/User/User_base");
 const AdminBase = require("./routes/User/Admin_base");
@@ -25,20 +23,6 @@ app.use(
 );
 app.use(helmet());
 
-// Set up session handling
-app.use(
-  cookieSession({
-    secret: process.env.SESSION_SECRET || "default_secret", // Use environment variable for session secret
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-    httpOnly: true, // Mitigates XSS
-    secure: process.env.NODE_ENV === "production", // Only set cookies over HTTPS in production
-  })
-);
-
-// // Enable CSRF Protection
-// const csrfProtection = csurf({ cookie: true });
-// app.use(csrfProtection);
-
 // Parse JSON request bodies
 app.use(express.json()); //to add json to the 'req' Object
 app.use(express.urlencoded({ extended: true }));
@@ -56,11 +40,6 @@ AdvancedTest_base(app);
 ClinicBase(app);
 GeneralTestBase(app);
 
-// // CSRF Token Handling
-app.use((req, res, next) => {
-  res.cookie("XSRF-TOKEN", req.csrfToken()); // Send CSRF token to the client as a cookie
-  next();
-});
 
 //connect to DB
 mongoose
