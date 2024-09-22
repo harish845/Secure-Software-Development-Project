@@ -162,10 +162,59 @@ export default function UserProfile() {
     },
   };
 
+  // logout function
   const handleLogOut = () => {
-    logout(); // needs to work on this
-    navigate("/");
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div>
+            <h1 style={{ fontSize: "24px", textAlign: "center" }}>Confirm Logout</h1>
+            <p style={{ fontSize: "18px", textAlign: "center" }}>
+              Are you sure you want to log out?
+            </p>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={() => {
+                  localStorage.clear();
+                  logout(); // Clear user session
+                  navigate("/");
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#6c757d",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={onClose}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
   };
+  
 
   // update function
   const handleEdit = async (UserId) => {
