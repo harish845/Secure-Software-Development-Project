@@ -352,25 +352,57 @@ export default function UserProfile() {
                     paddingRight: "20px",
                   }}
                 >
-                  <h4 style={{ color: "white" }}>Contact</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.contact}</h5>
-                  <br></br>
-                  <h4 style={{ color: "white" }}>Email</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.email}</h5>
-                  <br></br>
-                  <h4 style={{ color: "white" }}>Address</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.addLine1},</h5>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>
-                    {user.user.addLine2}, {user.user.addLine3}
-                  </h5>
+                  <div>
+                    {user.user.contact && (
+                      <>
+                        <h4 style={{ color: "white" }}>Contact</h4>
+                        <h5 style={{ color: "#1F3F49" }}>
+                          {user.user.contact}
+                        </h5>
+                        <br />
+                      </>
+                    )}
+
+                    {user.user.email && (
+                      <>
+                        <h4 style={{ color: "white" }}>Email</h4>
+                        <h5 style={{ color: "#1F3F49" }}>{user.user.email}</h5>
+                        <br />
+                      </>
+                    )}
+
+                    {(user.user.addLine1 ||
+                      user.user.addLine2 ||
+                      user.user.addLine3) && (
+                      <>
+                        <h4 style={{ color: "white" }}>Address</h4>
+                        {user.user.addLine1 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine1},
+                          </h5>
+                        )}
+                        {user.user.addLine2 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine2},
+                          </h5>
+                        )}
+                        {user.user.addLine3 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine3}
+                          </h5>
+                        )}
+                      </>
+                    )}
+                  </div>
+
                   <br />
                 </div>
               )}
               <div
                 style={{
                   display: "flex",
-                  paddingTop: "410px",
-                  paddingLeft: "17px",
+                  paddingTop: "550px",
+                  paddingLeft: "38px",
                 }}
               >
                 <div>
@@ -574,9 +606,7 @@ export default function UserProfile() {
                 </div>
               </div>
             </div>
-            <div
-              style={{ flex: "1", paddingTop: "10px", paddingLeft: "10px" }}
-            >
+            <div style={{ flex: "1", paddingTop: "10px", paddingLeft: "10px" }}>
               <div
                 style={{
                   width: "580px",
