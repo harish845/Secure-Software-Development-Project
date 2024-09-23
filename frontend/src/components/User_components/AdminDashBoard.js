@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer as ReactToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
+import { useLogOut } from "../../hooks/User_hooks/useLogOut";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { saveAs } from "file-saver";
@@ -12,7 +12,8 @@ export default function AdminDashBoard() {
   const [allUsers, setAllUsers] = useState([]);
   const [searchEmail, setSearchEmail] = useState(""); // State for search email input
   const navigate = useNavigate();
-  const role = "admin";
+  const role = localStorage.getItem("role");
+  const { logout } = useLogOut();
   const apiEndpoint = process.env.REACT_APP_API_GET_ALL_USERS_URL;
 
   // Function to validate URL
@@ -133,7 +134,57 @@ export default function AdminDashBoard() {
 
   // Function to handle logout
   const handleLogOut = () => {
-    navigate("/");
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div>
+            <h1 style={{ fontSize: "24px", textAlign: "center" }}>
+              Confirm Logout
+            </h1>
+            <p style={{ fontSize: "18px", textAlign: "center" }}>
+              Are you sure you want to log out?
+            </p>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={() => {
+                  localStorage.clear();
+                  logout(); // Clear user session
+                  navigate("/");
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#6c757d",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={onClose}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
   };
 
   useEffect(() => {
@@ -282,7 +333,45 @@ export default function AdminDashBoard() {
             </div>
           </div>
         </div>
-        <div style={{ flex: "1", paddingTop: "20px", paddingLeft: "300px" }}>
+
+        
+        <div style={{ display: "flex", alignItems: "center", paddingTop: "20px", paddingLeft: "200px", marginRight: "300px" }}>
+  <button
+    onClick={handleDownload}
+    style={{
+      backgroundColor: "#1F6E8C",
+      color: "white",
+      padding: "10px 20px",
+      borderRadius: "5px",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "18px",
+      marginLeft: "15px", // keep this margin to space buttons apart
+    }}
+  >
+    Download Report
+  </button>
+  <button
+    type="button"
+    onClick={handleLogOut}
+    style={{
+      backgroundColor: "#dc3545",
+      color: "#fff",
+      padding: "5px 10px",
+      borderRadius: "5px",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "18px",
+      marginLeft: "15px", // add margin here for spacing between buttons
+    }}
+  >
+    Logout
+  </button>
+</div>
+
+
+
+        {/* <div style={{ flex: "1", paddingTop: "20px", paddingLeft: "300px" }}>
           <button
             onClick={handleDownload}
             style={{
@@ -298,7 +387,22 @@ export default function AdminDashBoard() {
           >
             Download Report
           </button>
-        </div>
+          <button
+            type="button"
+            onClick={handleLogOut}
+            style={{
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              padding: "5px 10px",
+              borderRadius: "5px",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "18px",
+            }}
+          >
+            Logout
+          </button>
+        </div> */}
       </div>
       <div>
         <div

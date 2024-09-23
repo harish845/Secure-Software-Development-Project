@@ -162,10 +162,6 @@ export default function UserProfile() {
     },
   };
 
-  const determineUserRole = (email) => {
-    return email.startsWith("admin") ? "admin" : "user";
-  };
-
   // logout function
   const handleLogOut = () => {
     confirmAlert({
