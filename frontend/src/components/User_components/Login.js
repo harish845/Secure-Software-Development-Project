@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer as ReactToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLogIn } from "../../hooks/User_hooks/useLogIn";
@@ -8,7 +8,6 @@ import validator from "validator";
 import { Button } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 import bg from "../../assets/User_assets/img/bg.jpg";
-import googleButton from "../../assets/User_assets/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");

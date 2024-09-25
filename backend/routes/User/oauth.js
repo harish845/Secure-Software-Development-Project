@@ -31,7 +31,6 @@ async function getUserData(access_token) {
   
       const token = createToken(user._id);
       return { user: { ...user.toObject(), token } };
-      // return { user, token };
     } catch (err) {
       throw new Error(`Error creating user from Google data: ${err.message}`);
     }
@@ -52,12 +51,9 @@ async function getUserData(access_token) {
 
         let user = await User.findOne({ email: "dilhariedissanayake@gmail.com" });
         if (!user) {
-          // const { user: newUser, token } = await createUserFromGoogle(userData);
-          // user = newUser;
           const newUser = await createUserFromGoogle(userData);
           res.redirect(`http://localhost:3000/oauth-callback?user=${encodeURIComponent(JSON.stringify(newUser))}`);
         } else {
-          // const token = createToken(user._id);
           const token = createToken(user._id);
           const userWithToken = { ...user.toObject(), token };
           res.redirect(`http://localhost:3000/oauth-callback?user=${encodeURIComponent(JSON.stringify(userWithToken))}`);
