@@ -12,15 +12,26 @@ import bg from "../../assets/User_assets/img/bg.jpg";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Declare errorMessage state
+  const [errorMessage, setErrorMessage] = useState("");
   const { login, isLoading } = useLogIn();
   const navigate = useNavigate();
 
-  const isUserAdmin = email.startsWith("admin_");
+  // Initiate Google OAuth flow
+  async function handleGoogleAuth() {
+    try {
+      const response = await fetch("http://127.0.0.1:4000/auth-req/request", {
+        method: "POST",
+      });
+      const data = await response.json();
+      window.location.href = data.url; // Redirect to Google OAuth
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   const handleLoginFormSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous error message
+    setErrorMessage("");
 
     if (!validator.isEmail(email)) {
       toast.error("Email is not valid");
@@ -38,10 +49,14 @@ const Login = () => {
       setTimeout(() => {
         // Redirect to the appropriate dashboard after a successful login
         if (email.startsWith("admin")) {
+          const ROLE = "admin";
+          localStorage.setItem("role", ROLE);
           navigate("/admin-dashboard");
-      } else {
+        } else {
+          const ROLE = "user";
+          localStorage.setItem("role", ROLE);
           navigate("/home");
-      }
+        }
       }, 1000);
     } catch (Error) {
       toast.error("Incorrect Password");
@@ -179,6 +194,39 @@ const Login = () => {
                   </Link>
                 </div>
               </form>
+              <div
+                style={{
+                  padding: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "10vh",
+                }}
+              >
+                <button
+                  style={{
+                    border: "none",
+                    cursor: "pointer",
+
+                    padding: "8px",
+                  }}
+                  onClick={() => {
+                    handleGoogleAuth();
+                  }}
+                >
+                  <img
+                    style={{
+                      border: "none",
+                      cursor: "pointer",
+                      height: "40px",
+                      width: "40px",
+                    }}
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="google logo"
+                  />
+                  <span className="text-sm">Login with Google</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

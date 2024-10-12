@@ -1,11 +1,6 @@
 const express = require("express");
-const {
-  createUser,
-  loginUser,
-  updateUser,
-  deleteUser,
-  readTest,
-} = require("../../controllers/User_controllers");
+const { createUser, loginUser, updateUser, deleteUser, readTest } = require("../../controllers/User_controllers");
+
 const router = express.Router();
 const rateLimit = require("express-rate-limit");
 //import middle ware function - require auth for all routes

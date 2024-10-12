@@ -16,7 +16,6 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function UserProfile() {
   const navigate = useNavigate();
-
   const { logout } = useLogOut();
   const { user } = useContext(AuthContext);
   const [testData, setTestData] = useState([]);
@@ -53,7 +52,7 @@ export default function UserProfile() {
     };
 
     getTestData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     // Check if there's cached data in local storage
@@ -163,10 +162,59 @@ export default function UserProfile() {
     },
   };
 
+  // logout function
   const handleLogOut = () => {
-    logout();
-    navigate("/");
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div>
+            <h1 style={{ fontSize: "24px", textAlign: "center" }}>Confirm Logout</h1>
+            <p style={{ fontSize: "18px", textAlign: "center" }}>
+              Are you sure you want to log out?
+            </p>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={() => {
+                  localStorage.clear();
+                  logout(); // Clear user session
+                  navigate("/");
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#6c757d",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  border: "none",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+                onClick={onClose}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
   };
+  
 
   // update function
   const handleEdit = async (UserId) => {
@@ -353,25 +401,57 @@ export default function UserProfile() {
                     paddingRight: "20px",
                   }}
                 >
-                  <h4 style={{ color: "white" }}>Contact</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.contact}</h5>
-                  <br></br>
-                  <h4 style={{ color: "white" }}>Email</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.email}</h5>
-                  <br></br>
-                  <h4 style={{ color: "white" }}>Address</h4>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>{user.user.addLine1},</h5>{" "}
-                  <h5 style={{ color: "#1F3F49" }}>
-                    {user.user.addLine2}, {user.user.addLine3}
-                  </h5>
+                  <div>
+                    {user.user.contact && (
+                      <>
+                        <h4 style={{ color: "white" }}>Contact</h4>
+                        <h5 style={{ color: "#1F3F49" }}>
+                          {user.user.contact}
+                        </h5>
+                        <br />
+                      </>
+                    )}
+
+                    {user.user.email && (
+                      <>
+                        <h4 style={{ color: "white" }}>Email</h4>
+                        <h5 style={{ color: "#1F3F49" }}>{user.user.email}</h5>
+                        <br />
+                      </>
+                    )}
+
+                    {(user.user.addLine1 ||
+                      user.user.addLine2 ||
+                      user.user.addLine3) && (
+                      <>
+                        <h4 style={{ color: "white" }}>Address</h4>
+                        {user.user.addLine1 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine1},
+                          </h5>
+                        )}
+                        {user.user.addLine2 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine2},
+                          </h5>
+                        )}
+                        {user.user.addLine3 && (
+                          <h5 style={{ color: "#1F3F49" }}>
+                            {user.user.addLine3}
+                          </h5>
+                        )}
+                      </>
+                    )}
+                  </div>
+
                   <br />
                 </div>
               )}
               <div
                 style={{
                   display: "flex",
-                  paddingTop: "410px",
-                  paddingLeft: "17px",
+                  paddingTop: "550px",
+                  paddingLeft: "38px",
                 }}
               >
                 <div>
