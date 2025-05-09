@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"@ant-design/icons": "^5.4.0",
+		"@ant-design/icons": "^6.0.0",
 		"@mdi/font": "^7.4.47",
 		"@mdi/js": "^7.4.47",
 		"@mdi/react": "^1.6.1",
